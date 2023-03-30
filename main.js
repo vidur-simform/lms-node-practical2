@@ -7,15 +7,16 @@ weekArray.forEach((day, index) => {
 });
 
 //may change values for testing purpose
-//eg. const curDate = new Date(2023,2,30,06,59,59); 
+//eg. 
+const curDate = new Date(2023,2,21,20,00,00); 
 
-const curDate = new Date(); //current date
+// const curDate = new Date(); //current date
 
 //get day in short format(eg. Mon)
 const curDay = curDate.toLocaleString("en-us", { weekday: "short" });
 
 const main = () => {
-    let status = 'Closed', i = 0, n = scheduleArr.length, diff = 0, ind = weekArrayIndex[scheduleArr[0].day],flag=0;
+    let status = 'Closed', i = 0, n = scheduleArr.length, diff = 0, ind = weekArrayIndex[scheduleArr[0].day], flag = false;
     for (i = 0; i < n; i++) {
         if (scheduleArr[i].day == curDay) {
             const openTime = new Date(curDate.toLocaleDateString('en-US') + " " + scheduleArr[i].open).getTime();
@@ -30,16 +31,23 @@ const main = () => {
                 diff = (openTime - curTime) / (60 * 60 * 1000);
                 break;
             }
-        } else if(weekArrayIndex[scheduleArr[i].day] > weekArrayIndex[curDay]){
-            ind = weekArrayIndex[scheduleArr[0].day]
+        } else if (!flag && weekArrayIndex[scheduleArr[i].day] > weekArrayIndex[curDay]) {
+            const nextOpenTime = new Date(curDate.toLocaleDateString('en-US') + " " + scheduleArr[i].open).getTime();
+            const curTime = curDate.getTime();
+            diff = (nextOpenTime - curTime)/(60*60*1000) + (weekArrayIndex[scheduleArr[i].day] - weekArrayIndex[curDay])*24;
+            flag = true;
+            break;
         }
-            
-        
     }
     if (status == 'Open') {
         console.log(`Open, The shop will be closed within ${diff.toFixed(2)} Hrs.`);
     } else {
-        console.log(`Closed, The shop will be open after ${diff} Hrs.`);
+        if(!flag){
+            const nextOpenTime = new Date(curDate.toLocaleDateString('en-US') + " " + scheduleArr[ind].open).getTime();
+            const curTime = curDate.getTime();
+            diff = (nextOpenTime - curTime)/(60*60*1000) + (ind - weekArrayIndex[curDay] + 7)*24;
+        }
+        console.log(`Closed, The shop will be open after ${diff.toFixed(2)} Hrs.`);
     }
 };
 
