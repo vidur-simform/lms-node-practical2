@@ -7,9 +7,7 @@ weekArray.forEach((day, index) => {
     weekArrayIndex[day] = index;
 });
 
-//may change values for testing purpose
-//eg. 
-// const curDate = new Date(2023, 2, 28, 22, 00, 00);
+// const curDate = new Date(2023, 2, 31, 6, 34, 00);
 
 const curDate = new Date(); //current date
 
@@ -43,7 +41,14 @@ const main = () => {
         const nextOpenTime = new Date(curDate.toLocaleDateString('en-US') + " " + scheduleArr[ind].open).getTime();
         const curTime = curDate.getTime();
         diff = (nextOpenTime - curTime) / (60 * 60 * 1000) + ((weekArrayIndex[scheduleArr[ind].day] - weekArrayIndex[curDay] + 7) % 7) * 24;
-        console.log(`Closed, The shop will be open after ${diff.toFixed(2)} Hrs.`);
+        if(diff<24){
+            console.log(`Shop is Currently Closed. and it will be open after ${diff.toFixed(2)} Hrs.`);
+        }
+        else{
+            const days = parseInt(diff/24);
+            const hrs = (diff%24);
+            console.log(`Shop is Currently Closed. and it will be open after ${days} (Day/Days) and ${hrs.toFixed(2)} Hrs.`);
+        }
     }
 };
 
